@@ -35,38 +35,47 @@ est_opts2 = ['SC-'+tmp[i] for i in range(len(tmp))]
 ## End hack
 ## Without hack, replace est_opts2 with data2['est_opts']
 est_opts = np.concatenate((data1['est_opts'], est_opts2, data3['est_opts']))
+est_opts[0] = 'Basic'
+est_opts[1] = 'Huber'
+est_opts[5] = 'DCS'
 pos_RMSEs = np.concatenate((data1['pos_RMSEs'], data2['pos_RMSEs'], data3['pos_RMSEs']), axis=1)
 ang_RMSEs = np.concatenate((data1['ang_RMSEs'], data2['ang_RMSEs'], data3['ang_RMSEs']), axis=1)
 
 print ('est_opts are',est_opts)
 est_to_plot = np.arange(len(est_opts))
-in_to_plot = [0,1,3,5]
+est_to_plot = [0,1,2,5,6,7,8,9,13,16]
+in_to_plot = [[0,1],[3,5]]
 
-fig1, axs = plt.subplots(len(in_to_plot), 1, figsize=(10, len(in_opts) * 5))
-for ii, ax in enumerate(axs):
-    data_to_plot = [pos_RMSEs[in_to_plot[ii], jj, :] for jj in est_to_plot]
-    ax.violinplot(data_to_plot)
-    ax.set_xticks(np.arange(1, len(est_to_plot) + 1))
-    ax.set_xticklabels(est_opts[est_to_plot])
-    ax.set_title(in_opts[in_to_plot[ii]])
-    ax.set_xlabel('Estimation Options')
-    ax.set_ylabel('Position RMSE (m)')
+for kk,sub_in_plot in enumerate(in_to_plot):
+    fig1, axs = plt.subplots(len(sub_in_plot), 1, figsize=(10, len(sub_in_plot) * 5))
+    for ii, ax in enumerate(axs):
+        data_to_plot = [pos_RMSEs[sub_in_plot[ii], jj, :] for jj in est_to_plot]
+        ax.violinplot(data_to_plot)
+        ax.set_title(in_opts[sub_in_plot[ii]], fontsize=15)
+        ax.tick_params(axis='both', which='major', labelsize=15)
+        ax.set_xticks(np.arange(1, len(est_to_plot) + 1))
+        ax.set_ylim([0, 4])
+        ax.set_xticklabels(est_opts[est_to_plot], fontsize=15)
 
-plt.tight_layout()
-plt.savefig('pos_RMSEs.pdf')
+        if ii == len(in_to_plot)-1:
+            ax.set_xlabel('Estimation Options', fontsize=17)
+        ax.set_ylabel('Position RMSE (m)', fontsize=17)
 
-fig2, axs = plt.subplots(len(in_to_plot), 1, figsize=(10, len(in_opts) * 5))
-for ii, ax in enumerate(axs):
-    data_to_plot = [ang_RMSEs[in_to_plot[ii], jj, :] for jj in est_to_plot]
-    ax.violinplot(np.array(data_to_plot).T * 180.0/np.pi)
-    ax.set_xticks(np.arange(1, len(est_to_plot) + 1))
-    ax.set_xticklabels(est_opts[est_to_plot])
-    ax.set_title(in_opts[in_to_plot[ii]])
-    ax.set_xlabel('Estimation Options')
-    ax.set_ylabel('Angular RMSE (degrees)')
+    plt.tight_layout()
+    plt.savefig(f'pos_RMSEs_{kk}.pdf')
 
-plt.tight_layout()
-plt.savefig('ang_RMSEs.pdf')
+# fig2, axs = plt.subplots(len(in_to_plot), 1, figsize=(10, len(in_opts) * 5))
+# for ii, ax in enumerate(axs):
+#     data_to_plot = [ang_RMSEs[in_to_plot[ii], jj, :] for jj in est_to_plot]
+#     ax.violinplotp.array(data_to_plot).T * 180.0/np.pi)
+#     ax.set_xticks(np.arange(1, len(est_to_plot) + 1))
+#     ax.set_xticklabels(est_opts[est_to_plot])
+#     ax.set_title(in_opts[in_to_plot[ii]])
+#     ax.set_xlabel('Estimation Options')
+#     ax.set_ylabel('Angular RMSE (degrees)')
+
+# plt.tight_layout()
+# plt.savefig('ang_RMSEs.pdf')
 
 plt.show()
 # %%
