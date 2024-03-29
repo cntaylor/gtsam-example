@@ -117,7 +117,7 @@ def solve_scenario(gnss_data: np.array,
 
 #%%
 if __name__ == '__main__':
-    out_file = 'switchable_constraints_gnss_res.npz'
+    out_file = 'new_switchable_constraints_gnss_res.npz'
 
     # What weight to use on the switching model
     est_opts = np.array([
@@ -126,7 +126,13 @@ if __name__ == '__main__':
         ['SC-0.2', gtsam.noiseModel.Isotropic.Sigma(1,0.2)],
         ['SC-0.3', gtsam.noiseModel.Isotropic.Sigma(1,0.3)],
         ['SC-0.4', gtsam.noiseModel.Isotropic.Sigma(1,0.4)],
-        ['SC-0.5', gtsam.noiseModel.Isotropic.Sigma(1,0.5)]
+        ['SC-0.5', gtsam.noiseModel.Isotropic.Sigma(1,0.5)],
+        ['SC-0.6', gtsam.noiseModel.Isotropic.Sigma(1,0.6)],
+        ['SC-0.7', gtsam.noiseModel.Isotropic.Sigma(1,0.7)],
+        ['SC-0.8', gtsam.noiseModel.Isotropic.Sigma(1,0.8)],
+        ['SC-0.9', gtsam.noiseModel.Isotropic.Sigma(1,0.9)],
+        ['SC-1.0', gtsam.noiseModel.Isotropic.Sigma(1,1.0)],
+        ['SC-1.1', gtsam.noiseModel.Isotropic.Sigma(1,1.1)],
     ])
 
     if DEBUG: # change this to know which one runs...
@@ -157,7 +163,7 @@ if __name__ == '__main__':
         np_est_poses = solve_scenario(in_data[:run_length], switch_noise=switch_noise)
         end_time = time.time()
         times[est_select] = end_time - start_time
-        data_out_file = 'data_swichable_constraints_gnss_res_'+est_opts[est_select,0]+'.npz'
+        data_out_file = 'data_new_switchable_constraints_gnss_res_'+est_opts[est_select,0]+'.npz'
         if DEBUG:
             data_out_file = "DEBUG_"+data_out_file
         np.savez(data_out_file, est_states=np_est_poses)

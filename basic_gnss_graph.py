@@ -16,7 +16,7 @@ import time
 from gnss_est_utils import get_chemnitz_data, error_psuedorange, init_pos, error_clock
 
 
-DEBUG=False
+DEBUG=True
 if DEBUG:
     import matplotlib.pyplot as plt
 
@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
         in_data = get_chemnitz_data()
         if DEBUG:
-            run_length = 500
+            run_length = 50
         else:
             run_length = len(in_data)
         ########   
@@ -166,8 +166,8 @@ if __name__ == '__main__':
             # When doing one run, good for plotting results
             fig = plt.figure()
 
-            plt.plot(truth[:,0], truth[:,1])
-            plt.plot(np_est_poses[:,0], np_est_poses[:,1])
+            plt.plot(truth[:,0]-truth[0,0], truth[:,1]-truth[0,1])
+            plt.plot(np_est_poses[:,0]-truth[0,0], np_est_poses[:,1]-truth[0,1],'*')
             plt.legend(['truth', 'est'])
             plt.show()
 

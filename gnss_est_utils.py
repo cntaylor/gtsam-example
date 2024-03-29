@@ -8,6 +8,8 @@ import numpy as np
 time_divider=1E6
 c = 2.99792458E8 # m/s, speed of light
 c_small = c/time_divider # speed of light in smaller time units (to make solving more numerically stable)
+gamma_earth = (2.0*m.pi)/(24*3600.0) # rad/s, Earth rotation rate
+gamma_over_c = gamma_earth/c
 
 def get_chemnitz_data(filename = 'Data_Chemnitz.csv') -> np.array:
     '''
@@ -71,8 +73,11 @@ def init_pos(pseudorange_list: List[np.ndarray],
             diff_loc = tmp_var[:3] - pseudorange_list[i][2:5]
             dist = np.sqrt(np.sum(np.square(diff_loc)))
             A[i,:3] = diff_loc/dist
+            # A[i,0] -= gamma_over_c * pseudorange_list[i][3]
+            # A[i,1] += gamma_over_c * pseudorange_list[i][2]
             A[i,3] = c_small
             est_pseudo[i] = dist + tmp_var[3]*c_small
+                # gamma_over_c*(pseudorange_list[i][2]*tmp_var[1] - pseudorange_list[i][3]*tmp_var[0])
         y = z - est_pseudo
         delta_tmp_var = la.pinv(A) @ y
         tmp_var[:4] += delta_tmp_var
